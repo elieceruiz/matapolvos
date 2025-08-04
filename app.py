@@ -1,23 +1,29 @@
 import streamlit as st
 from datetime import datetime
 from pymongo import MongoClient
-import locale
 
 # === CONFIGURACIÓN DE LA APP ===
 st.set_page_config(page_title="💊 Consulta de Salud Íntima", layout="centered")
 st.title("💊 Simulación de Consulta Íntima")
-
-# === AJUSTE DE IDIOMA A ESPAÑOL ===
-try:
-    locale.setlocale(locale.LC_TIME, 'es_CO.utf8')
-except:
-    locale.setlocale(locale.LC_TIME, 'es_ES.utf8')
 
 # === CONEXIÓN SEGURA A MONGODB ===
 MONGO_URI = st.secrets["mongo_uri"]
 client = MongoClient(MONGO_URI)
 db = client["salud_sexual"]
 collection = db["consultas"]
+
+# === FUNCIÓN PARA FECHA EN ESPAÑOL ===
+def formatear_fecha_en_espanol(fecha: datetime) -> str:
+    meses = {
+        "January": "enero", "February": "febrero", "March": "marzo",
+        "April": "abril", "May": "mayo", "June": "junio",
+        "July": "julio", "August": "agosto", "September": "septiembre",
+        "October": "octubre", "November": "noviembre", "December": "diciembre"
+    }
+    texto = fecha.strftime("%d de %B de %Y")
+    for en, es in meses.items():
+        texto = texto.replace(en, es)
+    return texto
 
 # === INPUT DE USUARIO ===
 cedula = st.text_input("📇 Ingresa tu número de cédula o celular")
@@ -71,7 +77,7 @@ if st.button("Consultar") and cedula.strip():
             st.markdown("🏥 EPS: **SANITAS**")
             st.markdown("📅 Afiliado como cotizante o beneficiario desde hace varios años.")
             st.markdown("---")
-            st.success(f"🗓 Último examen registrado: **{fecha_examen.strftime('%d de %B de %Y')}**")
+            st.success(f"🗓 Último examen registrado: **{formatear_fecha_en_espanol(fecha_examen)}**")
             st.info(f"⌛ Han pasado **{dias} días** desde esa fecha.")
             st.markdown("📄 [Descargar resultado (PDF simulado)](#)", unsafe_allow_html=True)
 
@@ -80,7 +86,7 @@ if st.button("Consultar") and cedula.strip():
         fecha_examen = datetime.strptime(fecha_str, "%Y-%m-%d")
         dias = (hoy - fecha_examen).days
 
-        st.success(f"🗓 Último examen registrado: **{fecha_examen.strftime('%d de %B de %Y')}**")
+        st.success(f"🗓 Último examen registrado: **{formatear_fecha_en_espanol(fecha_examen)}**")
         st.info(f"⌛ Han pasado **{dias} días** desde esa fecha.")
         st.markdown("📄 [Descargar resultado (PDF simulado)](#)", unsafe_allow_html=True)
 

@@ -79,7 +79,7 @@ if st.button("Consultar") and cedula.strip():
             st.markdown("---")
             st.success(f"🗓 Último examen registrado: **{formatear_fecha_en_espanol(fecha_examen)}**")
             st.info(f"⌛ Han pasado **{dias} días** desde esa fecha.")
-            st.markdown("📄 [Descargar resultado (PDF simulado)](#)", unsafe_allow_html=True)
+            st.write("📄 Resultado disponible para descarga simulada (no habilitado en esta demo)")
 
     else:
         fecha_str = escenarios[opcion]
@@ -88,7 +88,7 @@ if st.button("Consultar") and cedula.strip():
 
         st.success(f"🗓 Último examen registrado: **{formatear_fecha_en_espanol(fecha_examen)}**")
         st.info(f"⌛ Han pasado **{dias} días** desde esa fecha.")
-        st.markdown("📄 [Descargar resultado (PDF simulado)](#)", unsafe_allow_html=True)
+        st.write("📄 Resultado disponible para descarga simulada (no habilitado en esta demo)")
 
     # === MOSTRAR CONTADOR DE CONSULTAS (TODOS LOS CASOS) ===
     st.warning(f"📊 Esta cédula ha sido consultada **{total_consultas} veces** en esta App.")
